@@ -1,45 +1,44 @@
 <template>
   <div class="cards_holder">
     <template v-for="card in getArticleCardsMock">
-      <d-article-card :props="card" :key="card.articleId" @add-to-cart="(e) => onArticleAddToCard(e)"/>
+      <d-article-card :props="card" :key="card.id" @add-to-cart="(e) => onArticleAddToCard(e)" @delete-from-cart="(e) => onArticleDeleteFromCard(e)"/>
     </template>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import Mock from "~/__mocks__/Mock";
-import {IArticleCard} from "~/types/cardsType";
-
+import {IItem} from "~/types/ItemTypes";
+import {Emit, Prop} from "vue-property-decorator";
+ 
 @Component
 export default class DCardsList extends Vue {
+  @Prop()
+  props!: IItem[]
   
-  private articleCardsMock: IArticleCard[] = Mock.getArticleCards(5  );
+  @Emit('add-to-cart')
+  onArticleAddToCard(articleId:number):number{
+    return articleId;
+  }  
+  @Emit('delete-from-cart')
+  onArticleDeleteFromCard(articleId:number):number{
+    return articleId;
+  }
+  
   get getArticleCardsMock(){
-    return this.articleCardsMock
+    return this.props;
   }
-  
-  onArticleAddToCard(articleId: number): void {
-    let temp = this.articleCardsMock.find((x) => x.articleId == articleId);
-    if (temp == undefined)
-      return;
-    temp.amountInCart = 1;
-    let newArr = this.articleCardsMock.map(x => x.articleId !== articleId ? x : temp);
-    if (newArr == undefined)
-      return;
-    console.log(newArr)
-    this.articleCardsMock = newArr as IArticleCard[];
-  }
-  
   
 }
 </script>
 
 <style scoped>
   .cards_holder {
+    min-width: 260px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     justify-items: center;
     align-items: center;
+    min-height: 100%;
   }
 </style>

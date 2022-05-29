@@ -1,27 +1,30 @@
 <template>
-  <header class="back">
-    <div class="inner">
-      <div style="font-size: 30px; font-weight: 800">
-        BuyIt
-      </div>
+  <header class="back header" >
+    <div class="inner default_container">
+      <NuxtLink style="display: flex; text-decoration: none;" to="/">
+        <img src="../static/BuyItLogo.svg" alt="BuyItLogo" style="width: 120px">
+        <p style="margin-left: 5px; color: #02bfbf;">
+          Marketplace
+        </p>
+      </NuxtLink>
       <div style="width: 100%">
-        <a-input-search placeholder="Искать на BuyIt" style="width: 100%"/>
+        <a-input-search placeholder="Искать на BuyIt" style="width: 100%" enter-button @search="onSearch"/>
       </div>
       <ul>
         <li>
           <a-badge count="2">
-          <a href="#" style="display: flex; flex-direction: column; color: rgba(0, 0, 0, 0.65)">
-            <a-icon type="smile" style="font-size: 30px" />
-            <div style="font-size: 10px">Кабинет</div>
-          </a>
+            <NuxtLink to="/user" style="display: flex; flex-direction: column; color: rgba(0, 0, 0, 0.65)">
+              <a-icon type="smile" style="font-size: 30px"/>
+              <div style="font-size: 10px">Кабинет</div>
+            </NuxtLink>
           </a-badge>
         </li>
         <li>
-          <a-badge count="1"> <!-- TODO: Заменить на пропс -->
-          <a href="#" style="display: flex; flex-direction: column; color: rgba(0, 0, 0, 0.65)">
-            <a-icon type="shopping-cart" style="font-size: 30px"/>
-            <div style="font-size: 10px">Корзина</div>
-          </a>
+          <a-badge :count="getCartCount"> <!-- TODO: Заменить на пропс -->
+            <NuxtLink to="/cart" style="display: flex; flex-direction: column; color: rgba(0, 0, 0, 0.65)">
+              <a-icon type="shopping-cart" style="font-size: 30px"/>
+              <div style="font-size: 10px">Корзина</div>
+            </NuxtLink>
           </a-badge>
         </li>
       </ul>
@@ -32,24 +35,46 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import {IItemInCart} from "~/types/ItemTypes";
+
+
 
 @Component
-export default class DHeader extends Vue{
-
+export default class DHeader extends Vue {
+  onSearch(value: string): void {
+    this.$router.push("/search");
+  }
+  
+  get getCartCount(){
+    let result = 0;
+    (<IItemInCart[]> this.$store.getters["cart-store/items"]).forEach(x => result += x.amount)
+    return result
+  }
 }
 </script>
 
 <style scoped>
+@import "shared-styles/global.css";
 
-.back{
-  background: #bae8e8;
+.back {
   width: 100%;
   height: 80px;
+  z-index: 10;
+  background: white;
 }
 
-.inner{
-  width: 100%;
+.header {
+  position:fixed;
+  left:0;          
+  top:0;            
+  width:100%;      
+  z-index:200;  
+  height:80px;    
+}
+
+.inner {
   height: 100%;
+  width: 100%;
   display: grid;
   padding-right: 30px;
   padding-left: 30px;
@@ -59,10 +84,10 @@ export default class DHeader extends Vue{
 }
 
 .upper_btn {
-  
+
 }
 
-ul{
+ul {
   margin-bottom: 0;
   width: 100%;
   display: flex;

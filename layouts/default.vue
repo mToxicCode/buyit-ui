@@ -1,13 +1,17 @@
 <template>
-  <div class="main">
+  <div>
     <DHeader/>
-      <Nuxt/>
-    <DFooter/>
+    <Nuxt style="margin-top: 80px;"/>
+    <DFooter style="margin-top: 0px"/>
   </div>
 </template>
 
-<style scoped>
-.main {
-  min-height: 100vh;
-}
-</style>
+
+<script>
+import Vue from "vue";
+import cartStorageFetching from "@/middleware/cart-storage-fetching";
+
+export default Vue.extend({
+  middleware: ['authentication', 'cart-storage-fetching']
+})
+</script>
